@@ -29,15 +29,8 @@ public class Main {
 				maxCount = numsCount[i];
 				}
 		}
-		if(semiCount%2==0) {
-			if(semiCount/2>maxCount) {
-				maxCount = semiCount/2;
-			}
-		}else{
-			if((semiCount/2)+1>maxCount) {
-				maxCount = (semiCount/2)+1;
-			}
-		}
+		semiCount = semiCount/2 + semiCount%2;
+		if(semiCount>maxCount) maxCount = semiCount;
 		System.out.println(maxCount);
 	}
 }
