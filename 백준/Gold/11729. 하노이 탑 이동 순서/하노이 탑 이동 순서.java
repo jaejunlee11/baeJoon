@@ -25,7 +25,8 @@ public class Main {
 		}
 		int target = 6- myPoint - targetPoint;
 		bfsprint(myPoint,target,--count,bw);
-		bw.write(myPoint + " " + targetPoint+"\n");
+//		bw.write(myPoint + " " + targetPoint+"\n");
+		bfsprint(myPoint,targetPoint,1,bw);
 		bfsprint(target,targetPoint,count,bw);
 	}
     public static void main(String[] args) throws Exception {
