@@ -1,37 +1,42 @@
 /*
- * 1. 도화지 배열 만들기 -> 크기 100 * 100
- * 2. 검은 종이 입력 받기 -> x,y => x-x+10, y-y+10 채우기
- * 3. 도화지 배열의 1인 부분 계산
-*/
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+ * 문제
+ * 1. 색종이 쌓기
+ * 2. 색종이가 가린 넓이 구하기
+ * 
+ * 풀이
+ * 1. 100 * 100 배열 만들기 -> arr[100][100]
+ * 2. 왼쪽 변 -1 ~ 외쪽변+9 => 아래쪽 변  -1 ~ 아래쪽변 +9를 1로 채우기
+ * 3. 1의 숫자 세기
+ * 
+ * 시간 복잡도
+ * 1. 100*100 + 100*100 =>2만 충분
+ */
+import java.io.*;
 import java.util.*;
 
 public class Main {
-
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		int[][] whiteBoard = new int[100][100];
-		for (int i = 0;i<N;i++) {
+		int[][] board = new int[100][100];
+		for(int i = 0;i<N;i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			int x = Integer.parseInt(st.nextToken());
-			int y = Integer.parseInt(st.nextToken());
-			for(int j = 0; j<10;j++) {
-				for(int k = 0; k<10;k++) {
-					whiteBoard[x+k][y+j] =1;
-					whiteBoard[x+j][y+k] =1;	
+			int r = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+			for(int j = r-1;j<r+9;j++) {
+				for(int k = c-1; k<c+9;k++) {
+					board[j][k]=1;
 				}
-				
 			}
 		}
-		int sum = 0;
-		for(int i = 0; i<100;i++) {
-			for(int j = 0; j<100;j++) {
-				sum +=whiteBoard[i][j];
+		int answer = 0;
+		for(int i = 0;i<100;i++) {
+			for(int j = 0;j<100;j++) {
+				if(board[i][j]==1) {
+					answer++;
+				}
 			}
 		}
-		System.out.println(sum);
+		System.out.println(answer);
 	}
-
 }
