@@ -23,7 +23,7 @@ public class Main {
 		int x = 3;
 		boolean flag = false;
 		StringBuilder sb =  new StringBuilder();
-		for(int i =0;i<N;i++) {
+		for(int i =0;i<N/3;i++) {
 			//i값에 따라서 제한이 가능 -> 3,3,3,9,3,3,3 => 81인 경우 -> 3,3,3,9,9,27,9,9,3,3 => 243인 경우 -> 3(1),3(2),3(1),9(3),9(2),27(4),27(3),81(5),27(3),27(4),9(2),9(3),3(1),3(2),3(1)
 			if(i%(x)==0) {
 				if(flag) {
@@ -53,6 +53,38 @@ public class Main {
 			}
 			sb.append("\n");
 		}
+		StringBuilder sb1 = new StringBuilder(sb.toString());
+		for(int i =N/3;i<(N/3)*2;i++) {
+			//i값에 따라서 제한이 가능 -> 3,3,3,9,3,3,3 => 81인 경우 -> 3,3,3,9,9,27,9,9,3,3 => 243인 경우 -> 3(1),3(2),3(1),9(3),9(2),27(4),27(3),81(5),27(3),27(4),9(2),9(3),3(1),3(2),3(1)
+			if(i%(x)==0) {
+				if(flag) {
+					K--;
+					x/=3;
+				}else {
+					K++;
+					x*=3;
+					if(K==maxK) flag=true;
+				}
+				
+			}
+			A : for(int j = 0;j<N;j++) {
+				
+				for(int k = 1;k<=K;k++) {
+//					if((i/((int) Math.pow(3, k))) + (i%((int) Math.pow(3, k))) >= (int) Math.pow(3, k-1) && (i/((int) Math.pow(3, k))) + (i%((int) Math.pow(3, k))) < ((int) Math.pow(3, k-1)) *2 && (j/((int) Math.pow(3, k))) + (j%((int) Math.pow(3, k))) >= (int) Math.pow(3, k-1) && (j/((int) Math.pow(3, k))) + (j%((int) Math.pow(3, k))) < ((int) Math.pow(3, k-1)) *2 ) {
+					if((j%((int) Math.pow(3, k))) == (int) Math.pow(3, k-1) && (i%((int) Math.pow(3, k))) >= (int) Math.pow(3, k-1) && (i%((int) Math.pow(3, k))) < ((int) Math.pow(3, k-1)) *2 ) {
+						j--;
+						for(int l = 0 ; l<(int) Math.pow(3, k-1);l++) {
+							sb.append(" ");
+							j++;
+						}
+						continue A;
+						}
+					}
+				sb.append("*");
+			}
+			sb.append("\n");
+		}
+		sb.append(sb1);
 		System.out.println(sb);
 	}
 }
