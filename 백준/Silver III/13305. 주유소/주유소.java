@@ -23,42 +23,38 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		int[] dis = new int[N-1];
-		int[] gas = new int[N];
+		long[] dis = new long[N-1];
+		long[] gas = new long[N];
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		for(int i = 0;i<N-1;i++) {
-			dis[i] = Integer.parseInt(st.nextToken());
+			dis[i] = Long.parseLong(st.nextToken());
 		}
 		st = new StringTokenizer(br.readLine());
 		for(int i = 0;i<N;i++) {
-			gas[i] = Integer.parseInt(st.nextToken());
+			gas[i] = Long.parseLong(st.nextToken());
 		}
-		long answer = 0 ;
-		for(int i = 0;i<N-1;) {
-			if(i==N-2) {
-				answer += (gas[i]*dis[i]);
-				break;
-			}
-			if(gas[i]>gas[i+1]) {
-				answer += (gas[i]*dis[i]);
-				i++;
-			}
-			else {
-				for(int j = i+1;j<N;j++) {
-					if(j==N-1) {
-						answer+=gas[i]*dis[j-1];
-						i=j;
-						break;
-						}
-					if(gas[i]>gas[j]) {
-						i=j;
-						break;
-					}else {
-						answer+=gas[i]*dis[j-1];
-					}
+		gas[N-1] = Long.MAX_VALUE;
+		long answer = 0;
+		boolean flag = false;
+		long tempGas =0;
+		for(int i = 0;i<N-1;i++) {
+			if(flag == false) {
+				if(gas[i]>=gas[i+1]) {
+				answer += (gas[i] * dis[i]);
+			}else {
+				tempGas = gas[i];
+				answer += (tempGas*dis[i]);
+				flag = true;
+				}
+			}else {
+				if(tempGas>gas[i+1]) {
+					answer += (tempGas * dis[i]);
+					flag = false;
+				}else {
+					answer += (tempGas*dis[i]);
 				}
 			}
 		}
 		System.out.println(answer);
- 	}
+	}
 }
