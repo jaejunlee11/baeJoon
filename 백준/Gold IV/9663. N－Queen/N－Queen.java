@@ -25,11 +25,13 @@ public class Main {
     static int answer =0;
     static int N;
     static int[] queens;
+    static boolean[] visited;
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             N = Integer.parseInt(br.readLine());
             answer = 0;
             queens = new int[N];
+            visited = new boolean[N];
             recur(0);
             if(N==1) System.out.println(1);
             else System.out.println(answer);
@@ -41,12 +43,14 @@ public class Main {
             return;
         }
         A: for(int i =0;i<N;i++) {
+            if(visited[i]==true) continue;
             for(int k = 0;k<depth;k++) {
-                if(queens[k]==i) continue A;
                 if(Math.abs(queens[k]-i) == (int) Math.abs(depth-k)) continue A;
             }
+            visited[i] = true;
             queens[depth] = i;
             recur(depth+1);
+            visited[i] = false;
         }
     }
 }
