@@ -26,12 +26,16 @@ public class Main {
     static int N;
     static int[] queens;
     static boolean[] visited;
+    static boolean[] cross1;
+    static boolean[] cross2;
     public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             N = Integer.parseInt(br.readLine());
             answer = 0;
             queens = new int[N];
             visited = new boolean[N];
+            cross1 = new boolean[2*N-1];
+            cross2 = new boolean[2*N-1];
             recur(0);
             if(N==1) System.out.println(1);
             else System.out.println(answer);
@@ -44,13 +48,16 @@ public class Main {
         }
         A: for(int i =0;i<N;i++) {
             if(visited[i]==true) continue;
-            for(int k = 0;k<depth;k++) {
-                if(Math.abs(queens[k]-i) == (int) Math.abs(depth-k)) continue A;
-            }
+            if(cross1[depth+i] == true) continue;
+            if(cross2[depth-i+(N-1)]==true) continue;
             visited[i] = true;
+            cross1[depth+i] = true;
+            cross2[depth-i+(N-1)] = true;
             queens[depth] = i;
             recur(depth+1);
             visited[i] = false;
+            cross1[depth+i] = false;
+            cross2[depth-i+(N-1)] =false;
         }
     }
 }
