@@ -1,57 +1,52 @@
 /*
  * 문제
- * 1. N*N체스판에 N개의 퀸이 서로 공격 못하게 만들기 -> 15
- * 2. 가능한 방법의 숫자 세기
+ * 1. 퀸을 서로 공격 못하게 배치
+ * 2. 퀸이 공격하지 못하는 경우의 수 구하기
  * 
  * 풀이
- * 1. N입력 받기
- * 2. N*N 판 만들기
- * 3. 백트랙킹
- * 4. count 출력
+ * 1.테케 입력 받기
+ * 2. N입력 받기 -> 최대 10
+ * 3. queens[N]배열 만들기
+ * 4. dfs돌기
  * 
- * 백트랙킹
- * 1. depth가 N이면 count상승 후 리턴
- * 2. 2중 for문을 돌면서 퀸이 없으면 놓기
- * 	2.1. 판에 가로 세로 대각이 겹치는 것이 있으면 놓지 말고 다음으로
- * 	2.2. 겹치는 것이 없으면 다시 백트랙킹 호출
+ * dfs
+ * 0. depth가 N에 도달하면 count++ reurn;
+ * 1. for문 돌기
+ *  1.1. depth만큼 for문을 돌면서
+ *      1.1.1. queens[k] 가 j와 같거나(세로체크)
+ *      1.1.2. queens[k] - j 이 k-i의 절대값과 같으면(대각체크) continue
+ *  1.2. 아니면 queens[depht+1]에 j를 담고
+ *  1.3. queens(depth+1)
  */
 import java.io.*;
 import java.util.*;
+ 
 public class Main {
-	static int[][] arr;
-	static int count = 0;
-	static int N ;
-	static int[] queens;
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		N = sc.nextInt();
-		queens = new int[N];
-		for(int i = 0 ;i< N;i++) {
-			queens[i] = -1;
-		}
-		back(0,0,0);
-		System.out.println(count);
-	}
-	
-	public static void back(int depth,int nr,int nc) {
-		if(depth == N) {
-			count++;
-//			System.out.println(count);
-			return;
-		}
-		for(int i = nr ;i<N;i++) {
-			if(depth!=i) return;
-			A : for(int j = nc ;j<N;j++) {
-//				System.out.println(i+" "+j);
-				for(int k = 0;k<depth;k++) {
-					if(queens[k]==j) continue A;
-					if(Math.abs(queens[k]-j)==Math.abs((k-i))) continue A;
-				}
-				queens[depth] = j;
-//				System.out.println(Arrays.toString(queens));
-				back(depth+1,i+1,0);
-				queens[depth] = -1;
-			}
-		}
-	}
+    static int answer =0;
+    static int N;
+    static int[] queens;
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            N = Integer.parseInt(br.readLine());
+            answer = 0;
+            queens = new int[N];
+            recur(0);
+            if(N==1) System.out.println(1);
+            else System.out.println(answer);
+    }
+     
+    public static void recur(int depth) {
+        if(depth==N) {
+            answer++;
+            return;
+        }
+        A: for(int i =0;i<N;i++) {
+            for(int k = 0;k<depth;k++) {
+                if(queens[k]==i) continue A;
+                if(Math.abs(queens[k]-i) == (int) Math.abs(depth-k)) continue A;
+            }
+            queens[depth] = i;
+            recur(depth+1);
+        }
+    }
 }
