@@ -52,7 +52,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static boolean[][] arr;
+	static List<Integer>[] arr;
 	static int N;
 	static boolean[] visited;
 	public static void main(String[] args) throws Exception {
@@ -61,13 +61,19 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 		int V = Integer.parseInt(st.nextToken());
-		arr= new boolean[N+1][N+1];
+		arr= new List[N+1];
+		for(int i = 1;i<=N;i++) {
+			arr[i] = new ArrayList<>();
+		}
 		for(int i = 0;i<M;i++) {
 			st =  new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			arr[a][b] = true;
-			arr[b][a] = true;
+			arr[a].add(b);
+			arr[b].add(a);
+		}
+		for(int i = 1;i<=N;i++) {
+			Collections.sort(arr[i]);
 		}
 		visited = new boolean[N+1];
 		visited[V] = true;
@@ -78,9 +84,8 @@ public class Main {
 	}
 	public static void dfs(int v) {
 		System.out.print(v+" ");
-		for(int i = 1;i<=N;i++) {
+		for(int i : arr[v]) {
 			if(visited[i]) continue;
-			if(!(arr[v][i])) continue;
 			visited[i] = true;
 			dfs(i);
 		}
@@ -93,9 +98,8 @@ public class Main {
 		while(!que.isEmpty()) {
 			int x= que.poll();
 			System.out.print(x+" ");
-			for(int i = 1;i<=N;i++) {
+			for(int i : arr[x]) {
 				if(visited[i]) continue;
-				if(!(arr[x][i])) continue;
 				que.add(i);
 				visited[i] = true;
 			}
