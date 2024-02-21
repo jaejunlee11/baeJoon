@@ -61,6 +61,7 @@ public class Main {
 	}
 	
 	static void dfs(int depth,int node) {
+		if(answer) return;
 		if(depth==4) {
 			answer = true;
 			return;
@@ -74,3 +75,4 @@ public class Main {
 		return;
 	}
 }
+// 메모리 18040	시간 228
