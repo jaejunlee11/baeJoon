@@ -1,27 +1,24 @@
 /*
- * 문제
- * 1. 정점의 수와 간선의 수가 주어짐
- * 2. 간선이 주어짐
- * 3. 간선을 모두 입력 받은 이후 케이스 번호와 트리의 수를 출력
- * 4. 0 0을 입력 받으면 종료
- * 
  * 풀이
+ * 1. 모든 원소 값들을 트리로 만듬
+ * 2. 모든 간선을 입력 받으면서 union처리 -> 사이클 판단이 된 대표 노드 번호 저장
+ * 3. 마지막으로 배열을 확인하며 대표 노드의 수 세기 -> 사이클 판단 안한 트리의 갯수ㄹ
  */
 import java.io.*;
 import java.util.*;
 
 public class Main {
 	public static boolean[] visited;
-	public static ArrayList<Integer>[] arr;
+	static int[] parents;
+	static int N;
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int caseNum = 0;
 		StringBuilder sb = new StringBuilder();
 		while(true) {
 			caseNum++;
-//			if(caseNum==10) break;
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			int N = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(st.nextToken());
 			int M = Integer.parseInt(st.nextToken());
 			if(N==0 && M == 0) break;
 			if(M==0) {
@@ -32,23 +29,23 @@ public class Main {
 				sb.append("Case "+caseNum+": A forest of "+N+" trees.\n");
 				continue;
 			}
-//			int[][] arr = new int[N+1][N+1];
-			arr = new ArrayList[N+1];
-			for(int i = 1;i<=N;i++) {
-				arr[i] = new ArrayList<Integer>();
-			}
+			parents = new int[N+1];
+			make();
 			visited = new boolean[N+1];
 			for(int i = 0 ;i<M;i++) {
 				st = new StringTokenizer(br.readLine());
 				int a = Integer.parseInt(st.nextToken());
 				int b = Integer.parseInt(st.nextToken());
-				arr[a].add(b);
-				arr[b].add(a);
+				if(!union(a,b)) {
+					visited[find(a)] = true;
+				}
 			}
 			int treeCount = 0;
 			for(int i = 1;i<=N;i++) {
-				if(visited[i]) continue;
-				if(!dfs(0,i)) treeCount+=1;
+				if(find(i)==i) {
+					if(visited[i]) continue;
+					treeCount++;
+				}
 			}
 			sb.append("Case "+caseNum+": ");
 			if(treeCount ==0) {
@@ -61,17 +58,24 @@ public class Main {
 		}
 		System.out.println(sb);
 	}
-	private static boolean dfs(int parent,int child) {
-		if(visited[child])
-			return true;
-		visited[child] = true;
-		boolean flag = false;
-		for(int i : arr[child]) {
-			if(parent == i) continue;
-			if(dfs(child,i)) {
-				flag = true;
-			}
+	
+	public static void make() {
+		for(int i = 1;i<=N;i++) {
+			parents[i] = i;
 		}
-		return flag;
+	}
+	
+	public static int find(int a) {
+		if(parents[a]==a) return a;
+		return parents[a] = find(parents[a]);
+	}
+	
+	public static boolean union(int a, int b) {
+		int rootA = find(a);
+		int rootB = find(b);
+		if(rootA == rootB) return false;
+		parents[rootA] = rootB;
+		if(visited[rootA]) visited[rootB] = true;
+		return true;
 	}
 }
