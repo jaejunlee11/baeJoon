@@ -1,75 +1,128 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.StringTokenizer;
+
 /*
- * 문제
- * 1. 뱀이 움직이는 경로가 주어짐
- * 2. 뱀이 사과를 먹으면 길이가 1 증가
- * 3. 뱀이 벽에 박거나 자신에게 박으면 게임 종료
- *
- * 풀이
- * 1. N이 주어짐
- * 2. board[N][N]생성
- * 3. K가 주어짐 -> 사과
- * 4. k개의 사과 배치 board[i][j] = 2
- * 5. L입력 -> 이동 횟수를 담을 que생성 int[2]로 넣기  
- * 6. 뱀을 리스트로 생성, (1,1)넣기 방향 : 오른쪽(0)
- * 7. 방향 배열 dir[][] ={{0,1},{-1,0},{0,-1},{1,0}}
- * 6. while로 돌기 -> count ++
- * 	6.1. que를 확인하고 해당 초와 일치하면 방향 전환 후 poll시키기
- * 	6.2. 방향에 맞게 머리를 이동 시킴(Deque에 앞쪽에 넣어주기) + (Deque에 뒤쪽 빼주기)
- * 		6.2.1. 이동 방향을 탐색 했을 때 경계거나 내 몸이면 count 출력 후 종료
- * 		6.2.2. 사과인 경우 꼬리 이동 skip -> 빼는 과정 X
+ * 벽 또는 자기자신과 몸이 부딪히면 게임 끝
+ * 사과를 먹으면 길이 늘어난다
+ * 뱀 초기 위치 (0,0) 길이 1, 초기 방향 오른쪽
+ * 
+ * 뱀 이동
+ *     - 몸 길이를 늘려 머리를 다음칸에 위치
+ *  - 벽이나 자기자신의 몸과 부딪히면 끝
+ *  - 이동한 칸에 사과가 있다면 그 칸의 사과 없어지고 꼬리 그대로
+ *  - 사과가 없다면 꼬리가 따라옴. 몸길이 변화x
+ *  - 게임 시작으로 부터 X초가 지난 후에 왼쪽 90도(L) or 오른쪽 90도(D)
+ *  
+ *  풀이
+ *  while(벽에 닿거나 스스로 닿을 때 까지) cnt++
+ *      스스로 몸통을 visit처리해서 뱀 위치 정하기
+ *      사과를 만나면 머리만 자라나기, 없으면 꼬리 줄어들기
+ *          2차원 배열에 저장할 것. 뱀이 움직인 위치에 대해서 사과 확인 후 false 사과 없애기
+ *      방향 지시가 있으면 방향 바꾸기 왼쪽 -1, 오른쪽 +1 dir 설정하기
+ *      
+ *     시간복잡도
+ *     보드 방문 100 * 100
+ *  
  */
-import java.io.*;
-import java.util.*;
+
 
 public class Main {
-	public static void main(String[] args) throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
-		int[][] board = new int[N+1][N+1];
-		int K = Integer.parseInt(br.readLine());
-		for(int i = 0;i<K;i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			board[Integer.parseInt(st.nextToken())][Integer.parseInt(st.nextToken())]=2;
-		}
-		int L = Integer.parseInt(br.readLine());
-		Deque<int[]> que = new ArrayDeque<>();
-		for(int i = 0; i<L;i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			que.add(new int[] {Integer.parseInt(st.nextToken()),(st.nextToken().charAt(0)-'A')});
-		}
-		// 머리, 꼬리, 방향
-		int[][] dir = {{0,1},{-1,0},{0,-1},{1,0}};
-		Deque<int[]> snakes = new ArrayDeque<>();
-		snakes.offerFirst(new int[] {1,1});
-		int snake = 0;
-		int count = 0;
-		while(true) {
-			count++;
-			int[] loc = snakes.peek();
-			int headR = loc[0] + dir[snake][0];
-			int headC = loc[1] + dir[snake][1];
-			if(headR<=0 || headC<=0 || headR>N || headC>N) break;
-			if(board[headR][headC]==1) break;
-			if(board[headR][headC]==2) {
-				board[headR][headC]=1;
-				snakes.offerFirst(new int[] {headR,headC});
-			}else {
-				board[headR][headC]=1;
-				snakes.offerFirst(new int[] {headR,headC});
-				int[] tail = snakes.pollLast();
-				board[tail[0]][tail[1]]=0;
-			}
-			if(!que.isEmpty() && que.peek()[0]==count) {
-				int[] loc2 = que.poll();
-				if(loc2[1]==('L'-'A')) {
-					snake++;
-					if(snake==4) snake =0;
-				}else {
-					snake--;
-					if(snake==-1) snake =3;
-				}
-			}
-		}
-		System.out.println(count);
-	}
+    static int[][] dir = {
+            {0, 0, 1, 0, -1},
+            {0, 1, 0, -1, 0}
+    };
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        int N = Integer.parseInt(br.readLine());
+        int K = Integer.parseInt(br.readLine());
+        boolean[][] apple = new boolean[N+1][N+1];
+        int[][] board = new int[N+2][N+2];
+        
+        for(int i=0; i<K; i++) {
+            st = new StringTokenizer(br.readLine());
+            int r = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            
+            apple[r][c] = true;
+        }
+        int L = Integer.parseInt(br.readLine());
+        Deque<String[]> cmds = new ArrayDeque<>();
+        
+        for(int i=0; i<L; i++) {
+            st = new StringTokenizer(br.readLine());
+            String time = st.nextToken();
+            String direction = st.nextToken();
+            cmds.offerLast(new String[] {time, direction});
+        }
+        int time = 1, cmdTime=0;
+        int r=1, c=1;
+        int d =1;
+        int[] tail = new int[]{1, 1};
+        String cmdDir = "";
+        String [] cmd;
+        
+        board[r][c] = d;
+        
+        if(!cmds.isEmpty()) {
+            cmd = cmds.pollFirst();
+            cmdTime = Integer.parseInt(cmd[0]);
+            cmdDir = cmd[1];
+        }
+        
+        while(true) {
+            
+            r+=dir[0][d];
+            c+=dir[1][d];
+                    
+            if(r<1|| r>N || c<1|| c>N || board[r][c]!=0 ) break;
+            // If apple in new position
+            if(!apple[r][c]) {
+                int tailr = tail[0];
+                int tailc = tail[1];
+                int taild = board[tailr][tailc];
+                int nr = tailr+dir[0][taild];
+                int nc = tailc+dir[1][taild];
+//                System.out.println(taild);
+                tail = new int[] {nr, nc};
+                board[tailr][tailc] = 0;
+            }
+            else {
+                apple[r][c] = false;
+            }
+//            System.out.println(Arrays.toString(tail));
+//            for(int i = 0;i<N;i++) {
+//            	System.out.println(Arrays.toString(board[i]));
+//            }
+            // cmd Time
+            if(time == cmdTime) {
+                if(cmdDir.equals("D")) {
+                    d++;
+                    if(d==5) d=1;
+                }
+                else {
+                    d--;
+                    if(d==0) d=4;
+                }
+                if(!cmds.isEmpty()) {
+                
+                    cmd = cmds.pollFirst();
+                    cmdTime = Integer.parseInt(cmd[0]);
+                    cmdDir = cmd[1];
+                }
+            }
+            
+            board[r][c] = d;
+            time ++;
+            
+        }
+        System.out.println(time);
+    }
+
 }
