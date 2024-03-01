@@ -31,7 +31,7 @@ public class Solution {
     static List<int[]>[] adjList;
     static boolean[] isChecked;
     static int count = 1;
- static boolean[] visited;
+    static boolean[] visited;
 
     public int solution(int N, int[][] road, int K) {
                adjList = new List[N+1];
@@ -40,39 +40,43 @@ public class Solution {
         }
         isChecked = new boolean[N+1];
         visited = new boolean[N+1];
-        A : for(int i = 0; i < road.length; i++) {
+        for(int i = 0; i < road.length; i++) {
             int a = road[i][0];
             int b = road[i][1];
             int c = road[i][2];
-            for(int j = 0; j < adjList[a].size(); j++) {
-                if(adjList[a].get(j)[0] == b) {
-                    if(adjList[a].get(j)[1] > c) {
-                        adjList[a].remove(j);
-                        break;
-                    }
-                    else continue A;
-                }
-            }
             adjList[a].add(new int[]{b, c});
             adjList[b].add(new int[]{a, c});
         }
+        int[] dis = new int[N+1];
         isChecked[1] = true;
         visited[1] = true;
-        dfs(1, K);
-
-        int answer = count;
-        return answer;
-    }
-
-    private static void dfs(int current, int K) {
-        for(int[] arr : adjList[current]) {
-        	if(visited[arr[0]]) continue;
-            if(arr[1] > K) continue;
-            if(!isChecked[arr[0]]) count++;
-            isChecked[arr[0]] = true;
-            visited[arr[0]] = true;
-            dfs(arr[0], K- arr[1]);
-            visited[arr[0]] = false;
+        for(int i = 2;i<=N;i++){
+            dis[i] = Integer.MAX_VALUE;
         }
+        int v = 1;
+        for(int i = 0;i<N;i++){
+            int min = dis[v];
+            for(int[] line : adjList[v]){
+                int d = line[0];
+                if(visited[d]) continue;
+                if(dis[d]>min + line[1]){
+                    dis[d] = min + line[1];
+                }
+            }
+            int temp = Integer.MAX_VALUE;
+            for(int j = 1;j<=N;j++){
+                if(visited[j]) continue;
+                if(temp>dis[j]){
+                    temp = dis[j];
+                    v = j;
+                }
+            }
+            visited[v]=true;
+        }
+        int answer = 0;
+        for(int i = 1;i<=N;i++){
+            if(dis[i]<=K) answer++;
+        }
+        return answer;
     }
 }
