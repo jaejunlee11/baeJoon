@@ -45,7 +45,7 @@ public class Main {
 		visited[0] = true;
 //		visited[1] = true;
 		long answer = 0;
-		while(!que.isEmpty()) {
+		A : while(!que.isEmpty()) {
 			long[] tempE = que.poll();
 			int v = (int)tempE[0];
 			if(visited[v]) continue;
@@ -55,6 +55,10 @@ public class Main {
 				if(visited[(int)edge[0]]) continue;
 				que.add(edge);
 			}
+			for(int i = 1;i<=V;i++) {
+				if(!visited[i]) continue A;
+			}
+			break;
 		}
 		System.out.println(answer);
 	}
