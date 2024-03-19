@@ -1,34 +1,33 @@
-import java.util.Arrays;
-
 /*
- * 1. 1 -> 마지막 1 : 1 , 마지막 2 : 0, 마지막이 3 : 0
- * 2. 2 -> 마지막 1 : 1 , 마지막 2 : 1, 마지막이 3 : 0
- * 3. 3 -> 마지막 1 : 2 , 마지막 2 : 1, 마지막이 3 : 1
- * 4. 4 -> 마지막 1 : 4 , 마지막 2 : 2, 마지막이 3 : 1
- * 5. N -> 마지막 1 : 이전 것 합 , 마지막 2 : 이전 마지막 1, 마지막이 3 : 이전 마지막 2
+ * 문제
+ * 1. 정수를 만드는 방법의 수 출력
+ * 
+ * 풀이
+ * 1. N입력
+ * 2. dp[1] = 1
+ * 3. dp[2] = 2
+ * 4. dp[3] = 4
+ * 5. dp[4] = 7
+ * 6. dp[i] => dp[i-1]+dp[i-2]+dp[i-3]
  */
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
-		int[] tests = new int[T];
-		int testMax = 0;
-		for(int test_case = 0; test_case < T;test_case++) {
-			tests[test_case] = Integer.parseInt(br.readLine());
-			if(tests[test_case]>testMax) testMax = tests[test_case];
+		int n = Integer.parseInt(br.readLine());
+		int[] dp = new int[12];
+		dp[1] = 1;
+		dp[2] = 2;
+		dp[3] = 4;
+		for(int i =4;i<=11;i++) {
+			dp[i] = dp[i-1]+dp[i-2]+dp[i-3];
 		}
-		int[][] answers = new int[testMax+1][3];
-		answers[1][0] = 1;
-		for(int i = 2;i<=testMax;i++) {
-			answers[i][0] = answers[i-1][0]+answers[i-1][1]+answers[i-1][2];
-			answers[i][1] = answers[i-1][0];
-			answers[i][2] = answers[i-1][1];
-		}
-		for(int test_case = 0; test_case < T;test_case++) {
-			System.out.println((answers[tests[test_case]][0]+answers[tests[test_case]][1]+answers[tests[test_case]][2]));
+		for(int i = 0;i<n;i++) {
+			int a = Integer.parseInt(br.readLine());
+			System.out.println(dp[a]);
 		}
 	}
+	
 }
