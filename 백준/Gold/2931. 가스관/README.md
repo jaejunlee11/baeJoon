@@ -24,8 +24,8 @@
 	<tbody>
 		<tr>
 			<td><img alt="" src="https://upload.acmicpc.net/3a92cfe2-8d8f-4059-b4e1-1d23b2e7df12/-/crop/73x118/29,0/-/preview/" style="width: 37px; height: 59px;"></td>
-			<td><img alt="" src="" style="width: 64px; height: 59px;"></td>
-			<td><img alt="" src="" style="width: 58px; height: 59px;"></td>
+			<td><img alt="" src="https://upload.acmicpc.net/3a92cfe2-8d8f-4059-b4e1-1d23b2e7df12/-/crop/127x118/168,0/-/preview/" style="width: 64px; height: 59px;"></td>
+			<td><img alt="" src="https://upload.acmicpc.net/3a92cfe2-8d8f-4059-b4e1-1d23b2e7df12/-/crop/116x118/339,0/-/preview/" style="width: 58px; height: 59px;"></td>
 			<td><img alt="" src="https://upload.acmicpc.net/3a92cfe2-8d8f-4059-b4e1-1d23b2e7df12/-/crop/91x118/519,0/-/preview/" style="width: 46px; height: 59px;"></td>
 			<td><img alt="" src="https://upload.acmicpc.net/3a92cfe2-8d8f-4059-b4e1-1d23b2e7df12/-/crop/90x118/685,0/-/preview/" style="width: 45px; height: 59px;"></td>
 			<td><img alt="" src="https://upload.acmicpc.net/3a92cfe2-8d8f-4059-b4e1-1d23b2e7df12/-/crop/89x118/853,0/-/preview/" style="width: 45px; height: 59px;"></td>
