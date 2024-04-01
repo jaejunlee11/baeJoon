@@ -25,6 +25,7 @@
  * 시간 복잡도
  * 1. 102*51 + 100*100 => 충분
  */
+//메모리 13800	시간 112
 import java.io.*;
 import java.util.*;
 
@@ -44,13 +45,6 @@ public class Main {
                 shop[i][0] = Integer.parseInt(st.nextToken());
                 shop[i][1] = Integer.parseInt(st.nextToken());
             }
-            int[][] arr = new int[N+2][N+2];
-            for(int i = 0;i<N+2;i++) {
-            	for(int j = 0;j<N+2;j++) {
-            		arr[i][j] = Math.abs(shop[i][0]-shop[j][0]) + Math.abs(shop[i][1]-shop[j][1]);
-            		arr[j][i] = arr[i][j];
-            	}
-            }
             Deque<Integer> que = new ArrayDeque<>();
             boolean[] visited = new boolean[N+2];
             que.add(0);
@@ -59,7 +53,7 @@ public class Main {
             	int start = que.poll();
             	for(int i = 0;i<N+2;i++) {
             		if(visited[i]) continue;
-            		if(arr[start][i]>1000) continue;
+            		if(Math.abs(shop[start][0]-shop[i][0]) + Math.abs(shop[start][1]-shop[i][1])>1000) continue;
             		if(i==N+1) {
             			flag=true;
             			break A;
