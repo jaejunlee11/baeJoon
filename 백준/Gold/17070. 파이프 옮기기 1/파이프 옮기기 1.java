@@ -32,7 +32,7 @@
  * 2. arr[N+1][N+1]생성
  * 3. arr채우기
  * 4. dp[3][N+1][N+1]생성
- * 5. dp[1][2]=1
+ * 5. dp[0][1][2]=1
  * 6. for문 돌리기 1~N
  * 	6.1. for문 돌리기 3~N
  * 		6.1.1. dp[0][i][j] = dp[0][i][j-1] + dp[2][i-1][j]
@@ -57,32 +57,35 @@ public class Main {
         StringTokenizer st;
         
         N = Integer.parseInt(br.readLine());
-        arr = new int[N][N];
-        for(int i=0; i<N; i++) {
+        arr = new int[N+1][N+1];
+        for(int i=1; i<=N; i++) {
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<N; j++) {
+            for(int j=1; j<=N; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        answer=0;
-        dfs(0,1,0);
-        System.out.println(answer);
+        int[][][] dp = new int[3][N+1][N+1];
+        dp[0][1][2] =1 ;
+        for(int i =1;i<=N;i++) {
+        	for(int j = 1 ;j<=N;j++) {
+        		if(i==1&&j==2) continue;
+        		if(arr[i][j]==1) continue;
+        		dp[0][i][j] = dp[0][i][j-1] + dp[2][i][j-1];
+        		dp[1][i][j] = dp[1][i-1][j] + dp[2][i-1][j];
+        		if(arr[i][j-1]==1 || arr[i-1][j]==1) continue;
+        		dp[2][i][j] = dp[0][i-1][j-1] + dp[1][i-1][j-1]+dp[2][i-1][j-1];
+        	}
+        }
+//        for(int k = 0;k<3;k++) {
+//        for(int i = 1;i<=N;i++) {
+//        	for(int j = 1;j<=N;j++) {
+//        			System.out.print(dp[k][i][j]);
+//        		}
+//        	System.out.println();
+//        	}
+//        System.out.println();
+//        System.out.println();
+//        }
+        System.out.println(dp[0][N][N]+dp[1][N][N]+dp[2][N][N]);
     }
-    private static void dfs(int r, int c, int state) {
-    	if(r==N-1 && c ==N-1) {
-    		answer++;
-    		return;
-    	}
-    	for(int k = 0;k<3;k++) {
-    		if(state==0 && k==1) continue;
-    		if(state==1 && k==0) continue;
-    		int nr = r + dir[k][0];
-    		int nc = c + dir[k][1];
-    		if(nr<0|| nc<0 || nr>=N || nc>=N) continue;
-    		if(arr[nr][nc]==1) continue;
-    		if(k==2 && (arr[nr-1][nc]==1|| arr[nr][nc-1]==1)) continue;
-    		dfs(nr,nc,k);
-    	}
-    }
-
 }
