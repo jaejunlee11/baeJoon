@@ -1,4 +1,3 @@
-
 /*
  * 문제
  * 1. 문자열 2개 존재
@@ -28,33 +27,19 @@ public class Main {
 		int s1Len = s1.length();
 		int s2Len = s2.length();
 		int[][] dp = new int[s1Len+1][s2Len+1];
-//		String[][] dp2 = new String[s1Len+1][s2Len+1];
-//		for(int i = 0;i<=s2Len;i++) {
-//			dp2[0][i]= "";
-//		}
-//		for(int j = 0;j<=s1Len;j++) {
-//			dp2[j][0]="";
-//		}
 		for(int i = 1;i<=s1Len;i++) {
 			for(int j = 1;j<=s2Len;j++) {
 				if(s1.charAt(i-1)==s2.charAt(j-1)) {
 					dp[i][j] = dp[i-1][j-1]+1;
-//					dp2[i][j] = dp2[i-1][j-1]+ s1.charAt(i-1);
 				}else {
 					if(dp[i][j-1]>dp[i-1][j]) {
 						dp[i][j] = dp[i][j-1];
-//						dp2[i][j] = dp2[i][j-1];
 					}else {
 						dp[i][j] = dp[i-1][j];
-//						dp2[i][j] = dp2[i-1][j];
 					}
 				}
 			}
 		}
-//		for(int i = 1;i<=s1Len;i++) {
-//			System.out.println(Arrays.toString(dp[i]));
-//		}
-//		System.out.println();
 		int i = s1Len;
 		int j = s2Len;
 		StringBuilder sb = new StringBuilder();
@@ -76,7 +61,6 @@ public class Main {
 			}
 		}
 		System.out.println(dp[s1Len][s2Len]);
-//		System.out.println(dp2[s1Len][s2Len]);
 		sb.reverse();
 		System.out.println(sb);
 	}
