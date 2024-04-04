@@ -27,13 +27,14 @@
  * 		2.1.3. papercopy[i]--;
  * 		2.1.4. dfs(index+i,copymap,copypaper)
  */
-
+//	메모리 298520	시간 916
 import java.io.*;
 import java.util.*;
 
 public class Main {
     static int[][] map;
     static int answer;
+    static int[] paper= {0,5,5,5,5,5};;
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -44,9 +45,8 @@ public class Main {
                 map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        int[] paper = {0,5,5,5,5,5};
         answer = Integer.MAX_VALUE;
-        dfs(0,map,paper);
+        dfs(0);
         if(answer == Integer.MAX_VALUE) {
         	System.out.println(-1);
         	return;
@@ -54,7 +54,7 @@ public class Main {
         System.out.println(answer);
     }
     
-    private static void dfs(int index, int[][] arr, int[] paper) {
+    private static void dfs(int index) {
     	if(index==100) {
     		int temp = 0;
     		for(int i = 1;i<=5;i++) {
@@ -65,26 +65,29 @@ public class Main {
     	}
     	int r = index/10;
     	int c = index%10;
-    	if(arr[r][c]==0) dfs(index+1,arr,paper);
-    	if(arr[r][c]==1) {
+    	if(map[r][c]==0) dfs(index+1);
+    	if(map[r][c]==1) {
     		A : for(int k = 5;k>=1;k--) {
     			if(paper[k]==0) continue A;
-    			int[][] mapcopy = new int[10][10];
-    			
-    			for(int i = 0;i<10;i++) {
-    				mapcopy[i] = arr[i].clone();
-    			}
     			for(int i = r;i<r+k;i++) {
     				for(int j = c;j<c+k;j++) {
     					if(i>=10 || j>=10) continue A;
-    					if(mapcopy[i][j]==0) continue A; 
-    					mapcopy[i][j]=0;
+    					if(map[i][j]==0) continue A; 
     				}
     			}
-    			int[] papercopy = new int[5];
-    			papercopy = paper.clone();
-    			papercopy[k]--;
-    			dfs(index+1,mapcopy,papercopy);
+    			for(int i = r;i<r+k;i++) {
+    				for(int j = c;j<c+k;j++) {
+    					map[i][j]=0;
+    				}
+    			}
+    			paper[k]--;
+    			dfs(index+1);
+    			paper[k]++;
+    			for(int i = r;i<r+k;i++) {
+    				for(int j = c;j<c+k;j++) {
+    					map[i][j]=1;
+    				}
+    			}
     		}
     	}
     }
