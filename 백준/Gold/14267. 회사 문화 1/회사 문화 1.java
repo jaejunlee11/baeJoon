@@ -1,71 +1,62 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
 /*
  * 문제
- * 1. 상사들이 존재
- * 2. 상사는 자신 보다 숫자가 더 작다 
- * 3. 1은 항상 사장
- * 4. 칭찬을 하면 부하의 부하들이 전부 칭찬
- * 5. 1~n의 칭찬 수치 구하기
+ * 1. 상사가 직속 부하를 칭찬하면 뎐쇄적으로 내리 칭찬
+ * 2. 모든 칭찬에는 칭찬의 정도를 의미하는 수치가 있는데, 이 수치를 부하들도 똑같이 칭찬 받는다. 
+ * 3. 직속 상사와 직속 부하 관계에 대해 주어지고, 칭찬에 대한 정보가 주어질때, 각자 얼마의 칭찬을 받았는지 출력
+ * 
+ * 입력
+ * 1. 회사의 직원 수 N, 최초의 칭찬의 횟수 M, 각 직원들은 1부터 N까지 번호가 매겨져 있다. 십만 이하
+ * 2. N명의 직속 상사의 번호, 직속 상사의 번호는 본인보다 작으며 최종적으로 1번은 사장
+ * 3. M줄에는 직속상사로부터 칭찬을 받은 직원번호 i, 칭찬의 수치 W 천 이하
+ *  사장은 칭찬을 받지 않는다. 
+ *  
+ * 출력
+ * 1번부터 N번의 직원까지 칭찬을 받은 정도 출력
  * 
  * 풀이
- * 1. N,M입력
- * 2. listArr[N]생성
- * 	2.1. listArr[] 초기화
- * 	2.2. listArr[값].add(i)
- * 3. happy[N]생성
- * 	3.1. happy[값] += 값
- * 4. que 생성
- * 5. que에 {1,0}넣기
- * 6. while => que빌때 까지
- * 	6.1. que에서 꺼내기
- * 	6.2. for(i : listArr[loc[0]])
- * 		6.2.0 happy[i]+=loc[1];
- * 		6.2.1. que.add(i,happy[i])
- * 7. happy 출력
+ * 1. int N, M, int[] node 입력, int[] answer 생성
+ * 2. int[][] arr 입력 -> arr[입력 1] += 입력2
+ * 3. for i 가 1무터 N + 1까지 answer[i] = answer[node[i]] 
  */
-import java.io.*;
-import java.util.*;
-
 public class Main {
-	public static void main(String[] args) throws Exception{
+	
+	static int N, M;
+	static int[] node, answer, arr;
+	
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		List<Integer>[] listArr = new List[N+1];
-		for(int i= 1 ;i<=N;i++) {
-			listArr[i] = new ArrayList<>();
-		}
+		
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		
 		st = new StringTokenizer(br.readLine());
-		for(int i = 1;i<=N;i++) {
-			int temp = Integer.parseInt(st.nextToken());
-			if(i==1) continue;
-			listArr[temp].add(i);
+		node = new int[N + 1];
+		for(int i = 1; i < N + 1; i++) {
+			node[i] = Integer.parseInt(st.nextToken());
 		}
-		int[] happy = new int[N+1];
-		for(int i = 0;i<M;i++) {
+		arr = new int[N + 1];
+		for(int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
-			happy[Integer.parseInt(st.nextToken())] += Integer.parseInt(st.nextToken());
+			int n1 = Integer.parseInt(st.nextToken());
+			int n2 = Integer.parseInt(st.nextToken());
+			
+			arr[n1] += n2;
 		}
-
-		boolean[] visited = new boolean[N+1];
-		for(int i = 1;i<=N;i++) {
-			if(visited[i]) continue;
-			Deque<int[]> que = new ArrayDeque<>();
-			que.add(new int[] {i,0});
-			visited[i] = true;
-			while(!que.isEmpty()) {
-				int[] loc = que.poll();
-				for(int j : listArr[loc[0]]) {
-						visited[j] = true;
-						happy[j] += loc[1];
-						que.add(new int[] {j,happy[j]});
-				}
-			}
+		
+		answer = new int[N + 1];
+		for(int i = 2; i < N + 1; i++) {
+			answer[i] = arr[i] + answer[node[i]];
 		}
 		StringBuilder sb = new StringBuilder();
-		for(int i = 1;i<=N;i++) {
-			sb.append(happy[i]+ " ");
-		}
-		System.out.println(sb);
-	}
+		for(int i = 1; i < N + 1; i++) sb.append(answer[i] + " ");
+	    System.out.print(sb);
+    }
+
 }
