@@ -1,46 +1,55 @@
-/*
- * 1. 테스트 케이스 수 입력 : T
- * 2. 스트커 줄 갯수 : N
- * 3. 스티커 2줄 입력 : arr1, arr2
- * 4. 스티커 선택 배열 : answers[N+1][3]
- * 5.1. 위쪽 스티커를 선택하는 경우 -> answers[i][0] = max(answers[i-1][1],answers[i-1][2]) + 위쪽 스티커
- * 5.2. 아래쪽 스티커를 선택하는 경우 -> answers[i][1] = max(answers[i-1][0],answers[i-1][2]) + 아래쪽 스티커
- * 5.3. 선택하지 않는 경우 ->answers[i][2] = max(answers[i-1][0],answers[i-1][1])
- * 6. 가장 큰 값을 선택
- */
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import java.io.*;
 import java.util.*;
+/*
+문제
+1. 스티커가 존재
+2. 스티커를 뜯으면 주변 것들을 못 뜯음
+3. 최대 점수 구하기
+
+풀이
+1. t입력
+2. n입력
+3. arr[n][2]생성
+4. arr채우기
+5. dp[n][3]생성 =>dp[0][0] = arr[0][0], dp[0][1] = arr[0][1], dp[0][2] = 0
+6. for문 돌기 n만큼
+    6.1. dp[i][0] = Math.max(dp[i-1][1],dp[i-1][2]) + arr[i][0]
+    6.2. dp[i][1] = Math.max(dp[i-1][0],dp[i-1][2]) + arr[i][1]
+    6.3. dp[i][2] = Math.max(dp[i-2][0],dp[i-2][1],dp[i-2][2]) => i>2일때만
+7. dp[n-1]최대값 출력
+ */
+
 public class Main {
-
-	public static void main(String[] args) throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int T = Integer.parseInt(br.readLine());
-		for(int i = 0; i<T;i++) {
-			int N  = Integer.parseInt(br.readLine());
-			int[] arr1 = new int[N+1];
-			int[] arr2 = new int[N+1];
-			StringTokenizer st1 = new StringTokenizer(br.readLine());
-			for(int j = 1;j<=N;j++) {
-				arr1[j] = Integer.parseInt(st1.nextToken());
-			}
-			StringTokenizer st2 = new StringTokenizer(br.readLine());
-			for(int j = 1;j<=N;j++) {
-				arr2[j] = Integer.parseInt(st2.nextToken());
-			}
-			int[][] answers = new int[N+1][3];
-			answers[1][0] = arr1[1];
-			answers[1][1] = arr2[1];
-			for(int j = 2;j<=N;j++) {
-				answers[j][0] = Math.max(answers[j-1][1],answers[j-1][2])+arr1[j];
-				answers[j][1] = Math.max(answers[j-1][0],answers[j-1][2])+arr2[j];
-				answers[j][2] = Math.max(answers[j-1][0],answers[j-1][1]);
-			}
-			int maxAnswer = Math.max(answers[N][0],answers[N][1]);
-			maxAnswer = Math.max(maxAnswer,answers[N][2]);
-			System.out.println(maxAnswer);
-		}
-		
-	}
-
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int T = Integer.parseInt(st.nextToken());
+        for(int t = 0 ;t<T;t++){
+            st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int[][] arr = new int[n][2];
+            int[][] dp = new int[n][3];
+            st = new StringTokenizer(br.readLine());
+            for(int i = 0;i<n;i++){
+                arr[i][0] = Integer.parseInt(st.nextToken());
+            }
+            st = new StringTokenizer(br.readLine());
+            for(int i = 0;i<n;i++){
+                arr[i][1] = Integer.parseInt(st.nextToken());
+            }
+            if(n==1){
+                System.out.println(Math.max(arr[0][0],arr[0][1]));
+            }else{
+                dp[0][0] = arr[0][0];
+                dp[0][1] = arr[0][1];
+                for(int i = 1;i<n;i++){
+                    dp[i][0] = Math.max(dp[i-1][1],dp[i-1][2]) + arr[i][0];
+                    dp[i][1] = Math.max(dp[i-1][0],dp[i-1][2]) + arr[i][1];
+                    dp[i][2] = Math.max(dp[i-1][0],dp[i-1][1]);
+                }
+                int answer = Math.max(dp[n-1][0],dp[n-1][1]);
+                System.out.println(Math.max(answer,dp[n-1][2]));
+            }
+        }
+    }
 }
