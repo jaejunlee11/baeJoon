@@ -1,11 +1,29 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
+/*
+문제
+1. N,M 존재
+2. N개의 숫자들 중 차이가 M 이상인 것 첫기
+3. 그 중 가장 작은 차이를 갖는것
 
+풀이
+1. N,M입력
+2. arr[N] 생성 => 채우기 => 정렬
+3. for문 돌리기 => N
+    3.1. arr[i] 이분 탐색으로 M 이상인 것 찾기
+    3.2. answer가 M인 경우 탈출
+4. answer 출력
+
+이분 탐색(start, end, now)
+1. mid = (start + end) / 2
+2. if(now-arr[mid] >= M ) answer 갱신 recur(start, mid-1,now)
+3. recur(mid+1, end, now)
+ */
 public class Main {
     static int M;
     static int[] arr;
     static int answer = Integer.MAX_VALUE;
-
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -16,32 +34,24 @@ public class Main {
             arr[i] = Integer.parseInt(br.readLine());
         }
         Arrays.sort(arr);
-
         for (int i = 0; i < N; i++) {
-            int target = arr[i] + M; // M 이상 차이가 나야하므로 arr[i] + M 이상인 값을 찾아야 함
-            int j = binarySearch(i + 1, N - 1, target); // i+1 부터 N-1 까지 이분 탐색
-
-            if (j != -1) {
-                answer = Math.min(answer, arr[j] - arr[i]);
-            }
-
-            if (answer == M) break; // 최소 차이가 M이면 바로 종료
+            recur(0, N - 1, arr[i]);
+            if (answer == M) break;
         }
-
         System.out.println(answer);
     }
-
-    private static int binarySearch(int start, int end, int target) {
-        int result = -1;
-        while (start <= end) {
-            int mid = (start + end) / 2;
-            if (arr[mid] >= target) {
-                result = mid; // 조건을 만족하는 첫 번째 위치를 찾는다
-                end = mid - 1; // 더 작은 index에서 만족하는 값을 찾기 위해 end를 줄인다
+    private static void recur(int start, int end ,int now) {
+        if(start>end) return;
+        int mid = (start + end) / 2;
+        if(Math.abs(arr[mid]-now)>=M){
+            answer = Math.min(answer,Math.abs(arr[mid]-now));
+            if(arr[mid]-now>0){
+                recur(start,mid-1,now);
             } else {
-                start = mid + 1; // 만족하지 않으면 더 큰 index로 범위를 이동
+                recur(mid+1,end,now);
             }
+        } else {
+            recur(start,mid-1,now);
         }
-        return result; // 조건을 만족하는 가장 작은 index를 반환, 없으면 -1
     }
 }
