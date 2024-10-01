@@ -30,10 +30,6 @@ public class Main {
         int[][] dp = new int[n+1][3];
         dp[1][0] = arr[1];
         dp[1][1] = arr[1];
-        if(n==1){
-            System.out.println(arr[1]);
-            return;
-        }
         for(int i = 2; i <= n; i++) {
             dp[i][0] = arr[i] + dp[i-1][1];
             dp[i][1] = arr[i] + dp[i-1][2];
