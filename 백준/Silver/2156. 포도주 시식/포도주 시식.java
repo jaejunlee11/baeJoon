@@ -1,42 +1,46 @@
-/*
- * 0. 현재잔을 마신 경우, 전잔도 마신 경우, 현재잔을 안마신 경우, 2잔을 패스한 경우
- * 1. N입력 받기 ->포도주 잔
- * 2. 포도주 배열에 넣기 -> drinks
- * 3. 현시점 현재잔을 마신 경우 arr1, 전잔도 마신 경우 arr2, 현재잔을 안마신 경우 arr3
- * 4. 1개 -> arr1[1]= drinks[1], arr2[1] = drinks[1], arr3[1] = 0 ,arr4[1] =0
- * 5. 2개 -> arr1[2]= arr3[1] + drinks[2], arr2[2] = arr1[1]+drinks[2], arr3[2] = Math.max(arr1[1],arr2[1]) ,arr4[1] =arr3[1]
- * 6. N개 -> arr1[N] = arr3[N-1] + drinks[N], arr2[N] = arr1[N-1]+drinks[N], arr3[N] = Math.max(arr1[N-1],arr2[N-1]) , arr4[N] = arr3[N-1]
- */
-import java.io.*;
 import java.util.*;
+import java.io.*;
+/*
+문제
+1. 포도주를 최대한 많이 마시기
+2. 포도주를 3개 연속은 안됨
+
+생각
+1. 0 => 전꺼 마신거
+2. 1 => 전꺼 안마시고 방금 마신거
+3. 2 => 이번꺼 안마신거
+풀이
+1. N입력
+2. arr[N+1] 생성 및 채우기, dp[N+1] 생성
+3. dp[1][0] = arr[1], dp[1][1] = arr[1], dp[1][2] = 0
+4. for문 돌리기 2~N
+    4.1. dp[i][0] = dp[i-1][1] + arr[i]
+    4.2. dp[i][1] = dp[i-1][2] + arr[i]
+    4.3. dp[i][2] = max(dp[i-1])
+5. max값 출력
+ */
 public class Main {
-	public static void main(String[] args) throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
-		int[] drinks = new int[N+1];
-		for(int i = 1;i<=N;i++) {
-			drinks[i] = Integer.parseInt(br.readLine());
-		}
-		if(N==1) {
-			System.out.println(drinks[1]);
-			return;
-		}
-		if(N==2) {
-			System.out.println(drinks[1]+drinks[2]);
-			return;
-		}
-		int[][] arr = new int[N+1][4];
-		arr[2][0] = drinks[2];
-		arr[2][1] = drinks[1]+drinks[2];
-		arr[2][2] = drinks[1];
-		arr[2][3] = drinks[1];
-		for(int i = 3;i<=N;i++) {
-			arr[i][0] = arr[i-1][2] + drinks[i];
-			arr[i][1] = Math.max(arr[i-1][0] + drinks[i], arr[i-2][3]+drinks[i-1]+drinks[i]);
-			arr[i][2] = Math.max(arr[i-1][0], arr[i-1][1]);
-			arr[i][3] = arr[i-1][2];
-		}
-		int answer = Math.max(arr[N][0], arr[N][1]);
-		System.out.println(Math.max(answer,arr[N][2]));
-	}
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        int[] arr = new int[n+1];
+        for (int i = 1; i <= n; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+        }
+        int[][] dp = new int[n+1][3];
+        dp[1][0] = arr[1];
+        dp[1][1] = arr[1];
+        if(n==1){
+            System.out.println(arr[1]);
+            return;
+        }
+        for(int i = 2; i <= n; i++) {
+            dp[i][0] = arr[i] + dp[i-1][1];
+            dp[i][1] = arr[i] + dp[i-1][2];
+            int temp = Math.max(dp[i-1][0], dp[i-1][1]);
+            dp[i][2] = Math.max(temp, dp[i-1][2]);
+        }
+        int answer = Math.max(dp[n][0], dp[n][1]);
+        System.out.println(Math.max(answer, dp[n][2]));
+    }
 }
