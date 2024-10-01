@@ -1,73 +1,60 @@
-/*
- * 문제
- * 1. 집들이 붙어있으면 단지
- * 2. 단지들의 수와 각 단지의 아파트 숫자 출력
- * 
- * 풀이
- * 1. N입력
- * 2. arr[N][N]생성
- * 3. arr채우기
- * 4. for문돌리기
- * 	4.1. 1을 만나면 visited확인 
- * 	4.2. dfs(위치)돌리기 => 갯수 리턴 
- * 	4.3. list에 담기
- * 5.리스트 사이즈 출력
- * 6. 리스트 정령 후 출력
- * 
- * dfs(r,c)
- * 0. answr = 0
- * 1. 4방 탐색
- * 	1.1. range check
- * 	1.2. visited check
- * 	1.3. answer += (dfs(nr,nc)+1)
- * 2. return answer
- */
-import java.io.*;
 import java.util.*;
+import java.io.*;
+/*
+문제
+1. 단지들이 존재
+2. 단지의 갯수와 크기를 출력
 
+풀이
+1. N입력
+2. arr[N][N]생성
+3. for문 돌리기
+    3.1. 1인 경우 bfs 돌리기 => 크기 구하기
+    3.2. answerList에 담기
+4. answerList 크기 출력, answerList 출력
+ */
 public class Main {
-	static int N;
-	static int[][] arr;
-	static boolean[][] visited;
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		arr = new int[N][N];
-		for(int i = 0;i<N;i++) {
-			String temp = br.readLine();
-			for(int j = 0;j<N;j++) {
-				arr[i][j] = temp.charAt(j) -'0';
-			}
-		}
-		visited = new boolean[N][N];
-		List<Integer> answer = new ArrayList<>();
-		for(int i =0 ;i<N;i++) {
-			for(int j = 0;j<N;j++) {
-				if(visited[i][j]) continue;
-				if(arr[i][j]==0) continue;
-				visited[i][j] =true;
-				int count = dfs(i,j)+1;
-				answer.add(count);
-			}
-		}
-		System.out.println(answer.size());
-		Collections.sort(answer);
-		for(int i : answer) {
-			System.out.println(i);
-		}
-	}
-	static int[][] dir = {{0,1},{0,-1},{1,0},{-1,0}};
-	static int dfs(int r,int c) {
-		int count =0;
-		for(int k = 0;k<4;k++) {
-			int nr = r +dir[k][0];
-			int nc = c +dir[k][1];
-			if(nr>=N || nc >=N || nr<0 || nc<0) continue;
-			if(arr[nr][nc]==0) continue;
-			if(visited[nr][nc]) continue;
-			visited[nr][nc] = true;
-			count += (dfs(nr,nc)+1);
-		}
-		return count;
-	}
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        int[][] arr = new int[N][N];
+        for(int i = 0; i < N; i++){
+            String line = br.readLine();
+            for(int j = 0; j < N; j++){
+                arr[i][j] = line.charAt(j) - '0';
+            }
+        }
+        boolean[][] visited = new boolean[N][N];
+        int[][] dir = {{0,1},{1,0},{0,-1},{-1,0}};
+        List<Integer> answerList = new ArrayList<>();
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < N; j++){
+                if(visited[i][j]) continue;
+                if(arr[i][j] == 0) continue;
+                visited[i][j] = true;
+                Deque<int[]> que = new ArrayDeque<>();
+                que.add(new int[]{i, j});
+                int count = 1;
+                while(!que.isEmpty()){
+                    int[] cur = que.poll();
+                    for(int k = 0; k < 4; k++){
+                        int nr = cur[0] + dir[k][0];
+                        int nc = cur[1] + dir[k][1];
+                        if(nr < 0 || nc < 0 || nr >= N || nc >= N) continue;
+                        if(visited[nr][nc]) continue;
+                        if(arr[nr][nc] == 0) continue;
+                        visited[nr][nc] = true;
+                        que.add(new int[]{nr, nc});
+                        count++;
+                    }
+                }
+                answerList.add(count);
+            }
+        }
+        System.out.println(answerList.size());
+        Collections.sort(answerList);
+        for(int i : answerList){
+            System.out.println(i);
+        }
+    }
 }
