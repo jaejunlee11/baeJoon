@@ -1,36 +1,43 @@
-/*
- * 1. 배열 크기 및 연속 갯수 입력 받기
- * 2. 배열 입력 받기
- * 3. 배열을 순회하면서 연속의 합 계산 하기(N-k까지만)
- * 4. 최대값 출력
- */
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
+/*
+문제
+1. 연속 되는 날짜의 온도의 합이 가장 높은 것
 
+풀이
+1. n, m 입력
+2. arr[n]생성 => 채우기
+3. temp = 0
+4. a= 0, b = m
+5. for => a~b
+    5.1. temp += arr[i]
+6. for문 돌리기 => m~n
+    6.1. temp += arr[i]
+    6.2. temp -= arr[i-m]
+    6.3. answer 갱신
+7. answer 출력
+ */
 public class Main {
-	public static void main(String[] args) throws Exception{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		//배열 크기
-		int N = Integer.parseInt(st.nextToken());
-		//연속 숫자
-		int K = Integer.parseInt(st.nextToken());
-		//배열 입력
-		StringTokenizer st1 = new StringTokenizer(br.readLine());
-		int[] arr = new int[N]; 
-		for(int i = 0;i<N;i++) {
-			arr[i] = Integer.parseInt(st1.nextToken());
-		}
-		//최대값
-		int maxNum =-100*N;
-		for(int i = 0;i<N-K+1;i++) {
-			int maxTemp = 0;
-			for(int j = 0; j<K;j++) {
-				maxTemp+=arr[i+j];
-			}
-			if(maxNum<maxTemp) maxNum = maxTemp;
-		}
-		System.out.println(maxNum);
-	}
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        int[] arr = new int[n];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+        int temp = 0;
+        for (int i = 0; i < m; i++) {
+            temp += arr[i];
+        }
+        int answer = temp;
+        for(int i = m; i < n; i++) {
+            temp += arr[i];
+            temp -= arr[i-m];
+            answer = Math.max(answer, temp);
+        }
+        System.out.println(answer);
+    }
 }
